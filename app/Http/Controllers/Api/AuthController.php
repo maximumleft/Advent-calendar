@@ -49,8 +49,11 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
+        $user = Auth::user();
+        $user->isAdmin = $user->isAdmin();
+
         return response()->json([
-            'user' => Auth::user(),
+            'user' => $user,
             'message' => 'Login successful'
         ]);
     }
@@ -67,6 +70,10 @@ class AuthController extends Controller
 
     public function me(Request $request): JsonResponse
     {
-        return response()->json($request->user());
+        $user = $request->user();
+        if ($user) {
+            $user->isAdmin = $user->isAdmin();
+        }
+        return response()->json($user);
     }
 }
